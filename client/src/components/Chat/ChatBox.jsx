@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useChat } from '../../hooks/useChat'
+import { useChat } from '../../context/ChatContext'
 
 function formatTime(ts) {
   const d = new Date(ts)

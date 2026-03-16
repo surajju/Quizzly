@@ -1,10 +1,11 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
-import { useSocket } from '../context/SocketContext'
-import { useGame } from '../context/GameContext'
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
+import { useSocket } from './SocketContext'
+import { useGame } from './GameContext'
 
 const MAX_MESSAGES = 50
+const ChatContext = createContext(null)
 
-export function useChat() {
+export function ChatProvider({ children }) {
   const { socket } = useSocket()
   const { gameCode } = useGame()
   const [messages, setMessages] = useState([])
@@ -18,7 +19,6 @@ export function useChat() {
 
   useEffect(() => {
     if (!socket) return
-
     const onChatMessage = (msg) => {
       setMessages((prev) => {
         const next = [...prev, msg]
@@ -28,7 +28,6 @@ export function useChat() {
         setUnreadCount((prev) => prev + 1)
       }
     }
-
     socket.on('chatMessage', onChatMessage)
     return () => socket.off('chatMessage', onChatMessage)
   }, [socket])
@@ -45,5 +44,13 @@ export function useChat() {
     setUnreadCount(0)
   }, [])
 
-  return { messages, sendMessage, unreadCount, setVisible, clearMessages }
+  return (
+    <ChatContext.Provider value={{ messages, sendMessage, unreadCount, setVisible, clearMessages }}>
+      {children}
+    </ChatContext.Provider>
+  )
+}
+
+export function useChat() {
+  return useContext(ChatContext)
 }

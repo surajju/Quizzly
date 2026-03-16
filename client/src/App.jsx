@@ -3,6 +3,7 @@ import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { SocketProvider } from './context/SocketContext'
 import { GameProvider, useGame } from './context/GameContext'
 import { PlayerProvider } from './context/PlayerContext'
+import { ChatProvider } from './context/ChatContext'
 import { useGameEvents } from './hooks/useGame'
 
 import Home from './pages/Home'
@@ -85,7 +86,9 @@ export default function App() {
     <SocketProvider>
       <GameProvider>
         <PlayerProvider>
-          <AppRoutes />
+          <ChatProvider>
+            <AppRoutes />
+          </ChatProvider>
         </PlayerProvider>
       </GameProvider>
     </SocketProvider>
