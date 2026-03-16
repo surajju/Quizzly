@@ -1,6 +1,10 @@
+const isProduction = process.env.NODE_ENV === 'production';
+
 export const config = {
-  PORT: 3001,
-  CORS_ORIGINS: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  PORT: parseInt(process.env.PORT, 10) || 3001,
+  CORS_ORIGINS: process.env.CORS_ORIGINS
+    ? process.env.CORS_ORIGINS.split(',')
+    : ['http://localhost:5173', 'http://127.0.0.1:5173'],
   TIMER_DEFAULT: 20,
   SCORING: {
     BASE_POINTS: 100,
@@ -12,4 +16,5 @@ export const config = {
     4: 2.0,
   },
   GAME_CODE_LENGTH: 6,
+  IS_PRODUCTION: isProduction,
 };

@@ -1,5 +1,10 @@
-fix: preserve chat messages across screen transitions
+feat: add Phase 3 — SQLite persistence + production deployment
 
-Move chat state from per-component useChat hook into a ChatContext
-provider at the app root, so messages survive route changes between
-lobby, question, reveal, and end screens.
+- Database: SQLite via better-sqlite3 with WAL mode, quizzes and
+  game_results tables, QuizRepository and ResultRepository
+- Quizzes saved to DB on creation, game results persisted on end
+- REST API: GET/DELETE /api/quizzes, GET /api/results
+- Config: PORT, CORS_ORIGINS, NODE_ENV read from env vars
+- Production: serves built client as static files, SPA fallback
+- Dockerfile: multi-stage build (client → server), ready for deploy
+- Socket.io: skip CORS in production (same-origin)

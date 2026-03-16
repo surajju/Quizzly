@@ -9,11 +9,11 @@ import { registerHandlers } from './handlers/index.js';
 let engine;
 
 export function initSocketServer(httpServer) {
-  const io = new Server(httpServer, {
-    cors: {
-      origin: config.CORS_ORIGINS,
-    },
-  });
+  const socketOpts = config.IS_PRODUCTION
+    ? {}
+    : { cors: { origin: config.CORS_ORIGINS } };
+
+  const io = new Server(httpServer, socketOpts);
 
   engine = new GameEngine(gameStore, config);
 

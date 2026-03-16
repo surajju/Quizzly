@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { gameStore } from '../store/GameStore.js';
+import { resultRepository } from '../store/ResultRepository.js';
 import { generateCode } from '../utils/generateCode.js';
 import {
   GameNotFound,
@@ -206,6 +207,15 @@ export class GameEngine {
     if (nextIndex >= questions.length) {
       transition(game, STATES.ENDED);
       const leaderboard = computeLeaderboard(game.participants);
+
+      try {
+        const quizTitle = game.quiz?.title || 'Untitled Quiz';
+        const totalQuestions = questions.length;
+        resultRepository.saveResults(gameCode, quizTitle, leaderboard, totalQuestions);
+      } catch (err) {
+        // Don't fail the game flow if DB write fails
+      }
+
       return { finalLeaderboard: leaderboard, state: 'ended' };
     }
 
@@ -223,6 +233,15 @@ export class GameEngine {
     this.timerManager.cleanup(gameCode);
     game.state = STATES.ENDED;
     const leaderboard = computeLeaderboard(game.participants);
+
+    try {
+      const quizTitle = game.quiz?.title || 'Untitled Quiz';
+      const totalQuestions = game.quiz?.questions?.length || 0;
+      resultRepository.saveResults(gameCode, quizTitle, leaderboard, totalQuestions);
+    } catch (err) {
+      // Don't fail the game flow if DB write fails
+    }
+
     return { finalLeaderboard: leaderboard, state: 'ended' };
   }
 

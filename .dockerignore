@@ -1,0 +1,10 @@
+node_modules
+.git
+*.md
+.commitmsg
+server/data/*.db
+server/data/*.db-wal
+server/data/*.db-shm
+client/dist
+client/node_modules
+server/node_modules

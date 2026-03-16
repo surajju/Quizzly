@@ -36,3 +36,8 @@ npm-debug.log*
 # Coverage
 coverage/
 .nyc_output/
+
+# Database
+server/data/*.db
+server/data/*.db-wal
+server/data/*.db-shm
