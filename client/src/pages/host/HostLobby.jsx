@@ -8,6 +8,7 @@ import Card from '../../components/common/Card'
 import Badge from '../../components/common/Badge'
 import PageWrapper from '../../components/layout/PageWrapper'
 import GameHeader from '../../components/layout/GameHeader'
+import ChatBox from '../../components/Chat/ChatBox'
 
 export default function HostLobby() {
   const { gameCode, hostToken, participants, dispatch } = useGame()
@@ -108,6 +109,10 @@ export default function HostLobby() {
             )}
           </div>
         </Card>
+
+        <div className="mb-6">
+          <ChatBox />
+        </div>
 
         <Button
           variant="primary"

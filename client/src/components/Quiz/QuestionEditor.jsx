@@ -9,6 +9,7 @@ export default function QuestionEditor({ value, onChange }) {
   const [options, setOptions] = useState(value?.options ?? ['', ''])
   const [correctIndex, setCorrectIndex] = useState(value?.correctIndex ?? 0)
   const [timeLimit, setTimeLimit] = useState(value?.timeLimit ?? 15)
+  const [imageUrl, setImageUrl] = useState(value?.imageUrl ?? '')
 
   useEffect(() => {
     onChange?.({
@@ -16,8 +17,9 @@ export default function QuestionEditor({ value, onChange }) {
       options: options.filter(Boolean),
       correctIndex,
       timeLimit,
+      imageUrl: imageUrl.trim() || undefined,
     })
-  }, [text, options, correctIndex, timeLimit])
+  }, [text, options, correctIndex, timeLimit, imageUrl])
 
   const addOption = () => {
     if (options.length >= 4) return
@@ -48,6 +50,25 @@ export default function QuestionEditor({ value, onChange }) {
         onChange={(e) => setText(e.target.value)}
         placeholder="Enter your question..."
       />
+      <div>
+        <Input
+          label="Image URL (optional)"
+          value={imageUrl}
+          onChange={(e) => setImageUrl(e.target.value)}
+          placeholder="https://example.com/image.png"
+        />
+        {imageUrl && (
+          <div className="mt-2 rounded-lg overflow-hidden border border-white/10 bg-white/5">
+            <img
+              src={imageUrl}
+              alt="Question preview"
+              className="max-h-40 w-full object-contain"
+              onError={(e) => { e.target.style.display = 'none' }}
+              onLoad={(e) => { e.target.style.display = 'block' }}
+            />
+          </div>
+        )}
+      </div>
       <div>
         <label className="block text-sm font-medium text-white/80 mb-2">
           Options (select correct)

@@ -7,6 +7,7 @@ import { useSocket } from '../../context/SocketContext'
 import Leaderboard from '../../components/Leaderboard/Leaderboard'
 import PageWrapper from '../../components/layout/PageWrapper'
 import GameHeader from '../../components/layout/GameHeader'
+import ChatBox from '../../components/Chat/ChatBox'
 
 export default function PlayerReveal() {
   const { leaderboard } = useGame()
@@ -87,6 +88,10 @@ export default function PlayerReveal() {
         >
           Waiting for next question...
         </motion.p>
+
+        <div className="mt-4">
+          <ChatBox collapsed />
+        </div>
       </div>
     </PageWrapper>
   )

@@ -5,6 +5,7 @@ import { usePlayer } from '../../context/PlayerContext'
 import Card from '../../components/common/Card'
 import PageWrapper from '../../components/layout/PageWrapper'
 import GameHeader from '../../components/layout/GameHeader'
+import ChatBox from '../../components/Chat/ChatBox'
 
 export default function PlayerLobby() {
   const { gameCode, participants } = useGame()
@@ -66,6 +67,10 @@ export default function PlayerLobby() {
             )}
           </div>
         </Card>
+
+        <div className="mt-6">
+          <ChatBox />
+        </div>
       </div>
     </PageWrapper>
   )

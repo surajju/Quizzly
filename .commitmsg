@@ -1,0 +1,8 @@
+feat: add Phase 2 — question images, quiz templates, lobby chat
+
+- Question images: hosts can add optional image URLs to questions,
+  displayed in editor preview and during gameplay
+- Quiz templates: 5 built-in templates (trivia, science, geography,
+  movies, tech) with REST API and template selector UI
+- Lobby chat: real-time chat via Socket.io across lobby and game
+  screens, with unread badges, host indicators, and nickname colors

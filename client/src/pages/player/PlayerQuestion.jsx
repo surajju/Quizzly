@@ -7,6 +7,7 @@ import OptionButton from '../../components/Quiz/OptionButton'
 import CountdownTimer from '../../components/Timer/CountdownTimer'
 import PageWrapper from '../../components/layout/PageWrapper'
 import GameHeader from '../../components/layout/GameHeader'
+import ChatBox from '../../components/Chat/ChatBox'
 
 export default function PlayerQuestion() {
   const { gameCode, currentQuestion, questionIndex, totalQuestions, endsAt } = useGame()
@@ -78,6 +79,10 @@ export default function PlayerQuestion() {
             ))}
           </div>
         )}
+
+        <div className="mt-4">
+          <ChatBox collapsed />
+        </div>
       </div>
     </PageWrapper>
   )

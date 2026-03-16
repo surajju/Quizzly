@@ -10,6 +10,7 @@ import Leaderboard from '../../components/Leaderboard/Leaderboard'
 import AnswerProgress from '../../components/Quiz/AnswerProgress'
 import PageWrapper from '../../components/layout/PageWrapper'
 import GameHeader from '../../components/layout/GameHeader'
+import ChatBox from '../../components/Chat/ChatBox'
 
 const optionColors = [
   'bg-red-500/20 border-red-500/50',
@@ -88,6 +89,10 @@ export default function HostReveal() {
         >
           {questionIndex + 1 >= totalQuestions ? 'End Quiz' : 'Next Question'}
         </Button>
+
+        <div className="mt-4">
+          <ChatBox collapsed />
+        </div>
       </div>
     </PageWrapper>
   )

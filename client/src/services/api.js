@@ -17,3 +17,15 @@ export async function getGameState(gameCode) {
   if (!res.ok) throw new Error('Failed to fetch game state')
   return res.json()
 }
+
+export async function getTemplates() {
+  const res = await fetch(`${apiBase}/templates`)
+  if (!res.ok) throw new Error('Failed to fetch templates')
+  return res.json()
+}
+
+export async function getTemplate(id) {
+  const res = await fetch(`${apiBase}/templates/${id}`)
+  if (!res.ok) throw new Error('Failed to fetch template')
+  return res.json()
+}

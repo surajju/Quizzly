@@ -10,6 +10,7 @@ import CountdownTimer from '../../components/Timer/CountdownTimer'
 import AnswerProgress from '../../components/Quiz/AnswerProgress'
 import PageWrapper from '../../components/layout/PageWrapper'
 import GameHeader from '../../components/layout/GameHeader'
+import ChatBox from '../../components/Chat/ChatBox'
 
 const optionColors = [
   'bg-red-500/20 border-red-500/50',
@@ -97,6 +98,10 @@ export default function HostQuestion() {
         >
           Reveal Answer
         </Button>
+
+        <div className="mt-4">
+          <ChatBox collapsed />
+        </div>
       </div>
     </PageWrapper>
   )

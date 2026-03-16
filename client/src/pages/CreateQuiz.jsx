@@ -7,6 +7,7 @@ import Button from '../components/common/Button'
 import Input from '../components/common/Input'
 import Card from '../components/common/Card'
 import QuestionEditor from '../components/Quiz/QuestionEditor'
+import TemplateSelector from '../components/Quiz/TemplateSelector'
 import PageWrapper from '../components/layout/PageWrapper'
 
 const emptyQuestion = {
@@ -14,17 +15,25 @@ const emptyQuestion = {
   options: ['', ''],
   correctIndex: 0,
   timeLimit: 15,
+  imageUrl: '',
 }
 
 export default function CreateQuiz() {
   const navigate = useNavigate()
   const { socket, connected } = useSocket()
   const { dispatch } = useGame()
+  const [mode, setMode] = useState('scratch')
   const [title, setTitle] = useState('')
   const [questions, setQuestions] = useState([])
   const [draft, setDraft] = useState(emptyQuestion)
   const [creating, setCreating] = useState(false)
   const [error, setError] = useState('')
+
+  const handleTemplateSelect = (template) => {
+    setTitle(template.title)
+    setQuestions(template.questions)
+    setMode('scratch')
+  }
 
   const handleAddQuestion = () => {
     const q = {
@@ -32,6 +41,7 @@ export default function CreateQuiz() {
       options: draft.options.filter(Boolean),
       correctIndex: draft.correctIndex,
       timeLimit: draft.timeLimit,
+      imageUrl: draft.imageUrl || undefined,
     }
     if (!q.text) {
       setError('Question text is required')
@@ -81,26 +91,56 @@ export default function CreateQuiz() {
           Create Quiz
         </motion.h1>
 
-        <Card className="mb-6">
-          <Input
-            label="Quiz Title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Enter quiz title..."
-          />
-        </Card>
-
-        <Card className="mb-6">
-          <h2 className="text-lg font-semibold text-white mb-4">Add Question</h2>
-          <QuestionEditor key={questions.length} value={draft} onChange={setDraft} />
-          <Button
-            variant="secondary"
-            className="mt-4"
-            onClick={handleAddQuestion}
+        <div className="flex gap-3 mb-6">
+          <button
+            type="button"
+            onClick={() => setMode('scratch')}
+            className={`flex-1 py-3 rounded-xl text-sm font-medium transition-all ${
+              mode === 'scratch' ? 'bg-indigo-500 text-white' : 'bg-white/5 text-white/60 hover:bg-white/10'
+            }`}
           >
-            Add Question
-          </Button>
-        </Card>
+            Start from scratch
+          </button>
+          <button
+            type="button"
+            onClick={() => setMode('template')}
+            className={`flex-1 py-3 rounded-xl text-sm font-medium transition-all ${
+              mode === 'template' ? 'bg-indigo-500 text-white' : 'bg-white/5 text-white/60 hover:bg-white/10'
+            }`}
+          >
+            Use a template
+          </button>
+        </div>
+
+        {mode === 'template' ? (
+          <Card className="mb-6">
+            <h2 className="text-lg font-semibold text-white mb-4">Choose a template</h2>
+            <TemplateSelector onSelect={handleTemplateSelect} />
+          </Card>
+        ) : (
+          <>
+            <Card className="mb-6">
+              <Input
+                label="Quiz Title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Enter quiz title..."
+              />
+            </Card>
+
+            <Card className="mb-6">
+              <h2 className="text-lg font-semibold text-white mb-4">Add Question</h2>
+              <QuestionEditor key={questions.length} value={draft} onChange={setDraft} />
+              <Button
+                variant="secondary"
+                className="mt-4"
+                onClick={handleAddQuestion}
+              >
+                Add Question
+              </Button>
+            </Card>
+          </>
+        )}
 
         <div className="mb-6">
           <h2 className="text-lg font-semibold text-white mb-4">
@@ -119,7 +159,9 @@ export default function CreateQuiz() {
                 >
                   <div className="flex-1 min-w-0">
                     <p className="text-white font-medium truncate">{q.text || '(No text)'}</p>
-                    <p className="text-sm text-white/50">{q.options?.length || 0} options</p>
+                    <p className="text-sm text-white/50">
+                      {q.options?.length || 0} options{q.imageUrl ? ' · 🖼️ image' : ''}
+                    </p>
                   </div>
                   <Button
                     variant="ghost"
