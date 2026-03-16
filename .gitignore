@@ -37,6 +37,9 @@ npm-debug.log*
 coverage/
 .nyc_output/
 
+# Production build artifacts
+server/public/
+
 # Database
 server/data/*.db
 server/data/*.db-wal

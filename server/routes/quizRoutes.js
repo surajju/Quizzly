@@ -10,6 +10,10 @@ import { resultRepository } from '../store/ResultRepository.js';
 const router = Router();
 const engine = new GameEngine(gameStore, config);
 
+router.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', uptime: process.uptime() });
+});
+
 router.post('/api/quiz', (req, res) => {
   try {
     const quiz = req.body;

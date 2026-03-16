@@ -1,10 +1,6 @@
-feat: add Phase 3 — SQLite persistence + production deployment
+chore: add Render deployment config + health check + docs
 
-- Database: SQLite via better-sqlite3 with WAL mode, quizzes and
-  game_results tables, QuizRepository and ResultRepository
-- Quizzes saved to DB on creation, game results persisted on end
-- REST API: GET/DELETE /api/quizzes, GET /api/results
-- Config: PORT, CORS_ORIGINS, NODE_ENV read from env vars
-- Production: serves built client as static files, SPA fallback
-- Dockerfile: multi-stage build (client → server), ready for deploy
-- Socket.io: skip CORS in production (same-origin)
+- render.yaml blueprint for one-click Render deploy
+- Health check endpoint at GET /api/health
+- Ignore server/public/ build artifacts in .gitignore
+- Add comprehensive project documentation (DOCS.md)
