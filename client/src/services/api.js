@@ -29,3 +29,14 @@ export async function getTemplate(id) {
   if (!res.ok) throw new Error('Failed to fetch template')
   return res.json()
 }
+
+export async function generateQuestions(topic, count = 5) {
+  const res = await fetch(`${apiBase}/generate`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ topic, count }),
+  })
+  const data = await res.json()
+  if (!res.ok) throw new Error(data.error || 'Failed to generate questions')
+  return data
+}

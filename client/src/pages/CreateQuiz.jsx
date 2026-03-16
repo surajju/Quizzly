@@ -8,6 +8,7 @@ import Input from '../components/common/Input'
 import Card from '../components/common/Card'
 import QuestionEditor from '../components/Quiz/QuestionEditor'
 import TemplateSelector from '../components/Quiz/TemplateSelector'
+import AIGenerator from '../components/Quiz/AIGenerator'
 import PageWrapper from '../components/layout/PageWrapper'
 
 const emptyQuestion = {
@@ -32,6 +33,12 @@ export default function CreateQuiz() {
   const handleTemplateSelect = (template) => {
     setTitle(template.title)
     setQuestions(template.questions)
+    setMode('scratch')
+  }
+
+  const handleAIGenerated = (generatedQuestions, topic) => {
+    setTitle(topic)
+    setQuestions(generatedQuestions)
     setMode('scratch')
   }
 
@@ -91,7 +98,7 @@ export default function CreateQuiz() {
           Create Quiz
         </motion.h1>
 
-        <div className="flex gap-3 mb-6">
+        <div className="flex gap-2 mb-6">
           <button
             type="button"
             onClick={() => setMode('scratch')}
@@ -99,7 +106,16 @@ export default function CreateQuiz() {
               mode === 'scratch' ? 'bg-indigo-500 text-white' : 'bg-white/5 text-white/60 hover:bg-white/10'
             }`}
           >
-            Start from scratch
+            From scratch
+          </button>
+          <button
+            type="button"
+            onClick={() => setMode('ai')}
+            className={`flex-1 py-3 rounded-xl text-sm font-medium transition-all ${
+              mode === 'ai' ? 'bg-indigo-500 text-white' : 'bg-white/5 text-white/60 hover:bg-white/10'
+            }`}
+          >
+            ✨ AI Generate
           </button>
           <button
             type="button"
@@ -108,11 +124,15 @@ export default function CreateQuiz() {
               mode === 'template' ? 'bg-indigo-500 text-white' : 'bg-white/5 text-white/60 hover:bg-white/10'
             }`}
           >
-            Use a template
+            Template
           </button>
         </div>
 
-        {mode === 'template' ? (
+        {mode === 'ai' ? (
+          <Card className="mb-6">
+            <AIGenerator onGenerated={handleAIGenerated} />
+          </Card>
+        ) : mode === 'template' ? (
           <Card className="mb-6">
             <h2 className="text-lg font-semibold text-white mb-4">Choose a template</h2>
             <TemplateSelector onSelect={handleTemplateSelect} />

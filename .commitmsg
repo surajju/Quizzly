@@ -1,6 +1,10 @@
-chore: add Render deployment config + health check + docs
+feat: add AI question generator + live emoji reactions
 
-- render.yaml blueprint for one-click Render deploy
-- Health check endpoint at GET /api/health
-- Ignore server/public/ build artifacts in .gitignore
-- Add comprehensive project documentation (DOCS.md)
+- AI Generator: enter any topic, Gemini 2.5 Flash generates quiz
+  questions with 4 options, correct answer, and time limits.
+  New "AI Generate" tab on the Create Quiz page with topic
+  suggestions and question count selector.
+- Emoji Reactions: tap emoji buttons (8 emojis) on reveal and end
+  screens, they float across everyone's screen in real-time via
+  Socket.io. Rate-limited to prevent spam.
+- ReactionContext persists across route transitions like ChatContext.

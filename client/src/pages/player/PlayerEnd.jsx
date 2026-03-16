@@ -9,6 +9,7 @@ import Podium from '../../components/Leaderboard/Podium'
 import Leaderboard from '../../components/Leaderboard/Leaderboard'
 import PageWrapper from '../../components/layout/PageWrapper'
 import GameHeader from '../../components/layout/GameHeader'
+import ReactionBar from '../../components/Reactions/ReactionBar'
 
 export default function PlayerEnd() {
   const navigate = useNavigate()
@@ -73,6 +74,10 @@ export default function PlayerEnd() {
         >
           <Leaderboard leaderboard={finalLeaderboard} highlightSocketId={socket?.id} />
         </motion.div>
+
+        <div className="mb-6">
+          <ReactionBar />
+        </div>
 
         <Button
           variant="primary"

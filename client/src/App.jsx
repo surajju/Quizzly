@@ -4,6 +4,8 @@ import { SocketProvider } from './context/SocketContext'
 import { GameProvider, useGame } from './context/GameContext'
 import { PlayerProvider } from './context/PlayerContext'
 import { ChatProvider } from './context/ChatContext'
+import { ReactionProvider } from './context/ReactionContext'
+import ReactionOverlay from './components/Reactions/ReactionOverlay'
 import { useGameEvents } from './hooks/useGame'
 
 import Home from './pages/Home'
@@ -87,7 +89,10 @@ export default function App() {
       <GameProvider>
         <PlayerProvider>
           <ChatProvider>
-            <AppRoutes />
+            <ReactionProvider>
+              <ReactionOverlay />
+              <AppRoutes />
+            </ReactionProvider>
           </ChatProvider>
         </PlayerProvider>
       </GameProvider>

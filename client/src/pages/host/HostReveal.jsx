@@ -11,6 +11,7 @@ import AnswerProgress from '../../components/Quiz/AnswerProgress'
 import PageWrapper from '../../components/layout/PageWrapper'
 import GameHeader from '../../components/layout/GameHeader'
 import ChatBox from '../../components/Chat/ChatBox'
+import ReactionBar from '../../components/Reactions/ReactionBar'
 
 const optionColors = [
   'bg-red-500/20 border-red-500/50',
@@ -90,7 +91,8 @@ export default function HostReveal() {
           {questionIndex + 1 >= totalQuestions ? 'End Quiz' : 'Next Question'}
         </Button>
 
-        <div className="mt-4">
+        <div className="mt-4 flex items-center gap-4 flex-wrap">
+          <ReactionBar />
           <ChatBox collapsed />
         </div>
       </div>

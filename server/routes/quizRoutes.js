@@ -6,6 +6,7 @@ import { logger } from '../utils/logger.js';
 import { templates } from '../data/templates.js';
 import { quizRepository } from '../store/QuizRepository.js';
 import { resultRepository } from '../store/ResultRepository.js';
+import { generateQuestions } from '../services/aiGenerator.js';
 
 const router = Router();
 const engine = new GameEngine(gameStore, config);
@@ -40,6 +41,25 @@ router.get('/api/quiz/:gameCode', (req, res) => {
     res.json(state);
   } catch (err) {
     logger.error('GET /api/quiz/:gameCode error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.post('/api/generate', async (req, res) => {
+  try {
+    const { topic, count } = req.body;
+    if (!topic?.trim()) {
+      return res.status(400).json({ error: 'Topic is required' });
+    }
+    const numQuestions = Math.min(Math.max(parseInt(count) || 5, 1), 15);
+    const questions = await generateQuestions(topic.trim(), numQuestions);
+    if (!questions.length) {
+      return res.status(500).json({ error: 'Failed to generate questions' });
+    }
+    logger.info(`AI generated ${questions.length} questions for "${topic}"`);
+    res.json({ questions, topic: topic.trim() });
+  } catch (err) {
+    logger.error('POST /api/generate error:', err.message);
     res.status(500).json({ error: err.message });
   }
 });

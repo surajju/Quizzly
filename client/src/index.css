@@ -57,3 +57,22 @@ body {
   opacity: 0;
   transition: opacity 200ms ease;
 }
+
+@keyframes float-up {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateY(-40vh) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-80vh) scale(0.8);
+  }
+}
+
+.animate-float-up {
+  animation: float-up 2.5s ease-out forwards;
+}

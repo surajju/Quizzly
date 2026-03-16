@@ -8,6 +8,7 @@ import Leaderboard from '../../components/Leaderboard/Leaderboard'
 import PageWrapper from '../../components/layout/PageWrapper'
 import GameHeader from '../../components/layout/GameHeader'
 import ChatBox from '../../components/Chat/ChatBox'
+import ReactionBar from '../../components/Reactions/ReactionBar'
 
 export default function PlayerReveal() {
   const { leaderboard } = useGame()
@@ -89,7 +90,8 @@ export default function PlayerReveal() {
           Waiting for next question...
         </motion.p>
 
-        <div className="mt-4">
+        <div className="mt-4 flex items-center gap-4 flex-wrap">
+          <ReactionBar />
           <ChatBox collapsed />
         </div>
       </div>
