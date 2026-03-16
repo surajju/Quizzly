@@ -6,6 +6,7 @@ import Button from '../../components/common/Button'
 import Podium from '../../components/Leaderboard/Podium'
 import Leaderboard from '../../components/Leaderboard/Leaderboard'
 import PageWrapper from '../../components/layout/PageWrapper'
+import GameHeader from '../../components/layout/GameHeader'
 
 export default function HostEnd() {
   const navigate = useNavigate()
@@ -21,6 +22,7 @@ export default function HostEnd() {
   return (
     <PageWrapper>
       <div className="max-w-2xl mx-auto">
+        <GameHeader />
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}

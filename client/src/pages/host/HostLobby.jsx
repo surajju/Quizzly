@@ -7,11 +7,13 @@ import Button from '../../components/common/Button'
 import Card from '../../components/common/Card'
 import Badge from '../../components/common/Badge'
 import PageWrapper from '../../components/layout/PageWrapper'
+import GameHeader from '../../components/layout/GameHeader'
 
 export default function HostLobby() {
   const { gameCode, hostToken, participants, dispatch } = useGame()
   const { socket } = useSocket()
   const [copied, setCopied] = useState(false)
+  const [linkCopied, setLinkCopied] = useState(false)
 
   useGameEvents()
 
@@ -29,9 +31,18 @@ export default function HostLobby() {
     }
   }
 
+  const handleCopyLink = () => {
+    if (gameCode) {
+      navigator.clipboard.writeText(`${window.location.origin}/join/${gameCode}`)
+      setLinkCopied(true)
+      setTimeout(() => setLinkCopied(false), 2000)
+    }
+  }
+
   return (
     <PageWrapper>
       <div className="max-w-xl mx-auto">
+        <GameHeader />
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -43,7 +54,7 @@ export default function HostLobby() {
 
         <Card glow className="text-center py-8 mb-6">
           <p className="text-white/60 text-sm mb-2">Game Code</p>
-          <div className="flex items-center justify-center gap-3">
+          <div className="flex items-center justify-center gap-3 flex-wrap">
             <motion.span
               key={gameCode}
               initial={{ scale: 1.1 }}
@@ -52,13 +63,22 @@ export default function HostLobby() {
             >
               {gameCode}
             </motion.span>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleCopyCode}
-            >
-              {copied ? '✓ Copied!' : 'Copy'}
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleCopyCode}
+              >
+                {copied ? '✓ Copied!' : 'Copy'}
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleCopyLink}
+              >
+                {linkCopied ? '✓ Link copied!' : 'Copy Link'}
+              </Button>
+            </div>
           </div>
         </Card>
 

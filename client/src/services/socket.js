@@ -8,6 +8,9 @@ export function createSocket() {
   socket = io(config.SOCKET_URL, {
     transports: ['websocket', 'polling'],
     autoConnect: true,
+    reconnection: true,
+    reconnectionAttempts: 10,
+    reconnectionDelay: 1000,
   })
   return socket
 }

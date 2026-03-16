@@ -9,11 +9,11 @@ export default function Leaderboard({ leaderboard, showPoints = true, highlightS
   return (
     <Card className="overflow-hidden">
       <div className="flex items-center gap-4 px-4 py-3 border-b border-white/10 text-sm text-white/60 font-medium">
-        <div className="w-10" />
+        <div className="w-10 hidden sm:block" />
         <span className="w-8">#</span>
         <span className="flex-1">Player</span>
         <span>Score</span>
-        {showPoints && <span className="w-12">Pts</span>}
+        {showPoints && <span className="w-12 hidden sm:inline">Pts</span>}
       </div>
       <LayoutGroup>
         <div className="space-y-2 mt-2">

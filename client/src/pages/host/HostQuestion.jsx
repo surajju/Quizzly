@@ -9,6 +9,7 @@ import QuestionDisplay from '../../components/Quiz/QuestionDisplay'
 import CountdownTimer from '../../components/Timer/CountdownTimer'
 import AnswerProgress from '../../components/Quiz/AnswerProgress'
 import PageWrapper from '../../components/layout/PageWrapper'
+import GameHeader from '../../components/layout/GameHeader'
 
 const optionColors = [
   'bg-red-500/20 border-red-500/50',
@@ -58,7 +59,8 @@ export default function HostQuestion() {
   return (
     <PageWrapper>
       <div className="max-w-2xl mx-auto">
-        <div className="flex justify-between items-start mb-6">
+        <GameHeader />
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
           <QuestionDisplay
             question={currentQuestion}
             questionIndex={questionIndex}
@@ -78,7 +80,9 @@ export default function HostQuestion() {
               ))}
             </div>
           </QuestionDisplay>
-          <CountdownTimer endsAt={endsAt} size={100} />
+          <div className="flex justify-center sm:justify-end">
+            <CountdownTimer endsAt={endsAt} size={100} />
+          </div>
         </div>
 
         <Card className="mb-6">

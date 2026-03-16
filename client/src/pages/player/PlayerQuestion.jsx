@@ -6,6 +6,7 @@ import QuestionDisplay from '../../components/Quiz/QuestionDisplay'
 import OptionButton from '../../components/Quiz/OptionButton'
 import CountdownTimer from '../../components/Timer/CountdownTimer'
 import PageWrapper from '../../components/layout/PageWrapper'
+import GameHeader from '../../components/layout/GameHeader'
 
 export default function PlayerQuestion() {
   const { gameCode, currentQuestion, questionIndex, totalQuestions, endsAt } = useGame()
@@ -34,7 +35,8 @@ export default function PlayerQuestion() {
   return (
     <PageWrapper>
       <div className="max-w-2xl mx-auto">
-        <div className="flex justify-between items-start mb-6">
+        <GameHeader />
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
           <div className="flex-1">
             <QuestionDisplay
               question={currentQuestion}

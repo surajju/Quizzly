@@ -14,7 +14,7 @@ export default function Podium({ leaderboard }) {
   const order = [2, 1, 3]
 
   return (
-    <div className="flex items-end justify-center gap-4 h-64">
+    <div className="flex items-end justify-center gap-2 sm:gap-4 h-48 sm:h-64">
       {order.map((pos) => {
         const entry = top3[pos - 1]
         const h = heights[pos]
@@ -24,7 +24,7 @@ export default function Podium({ leaderboard }) {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: h, opacity: 1 }}
             transition={{ duration: 0.5, delay: pos * 0.1 }}
-            className={`flex flex-col items-center w-24`}
+            className="flex flex-col items-center w-20 sm:w-24"
           >
             {entry && (
               <div className="mb-2 text-center">

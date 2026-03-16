@@ -69,6 +69,7 @@ function AppRoutes() {
         <Route path="/host/question" element={<HostQuestion />} />
         <Route path="/host/reveal" element={<HostReveal />} />
         <Route path="/host/end" element={<HostEnd />} />
+        <Route path="/join/:gameCode" element={<PlayerJoin />} />
         <Route path="/play/join" element={<PlayerJoin />} />
         <Route path="/play/lobby" element={<PlayerLobby />} />
         <Route path="/play/question" element={<PlayerQuestion />} />

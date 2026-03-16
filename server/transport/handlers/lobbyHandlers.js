@@ -1,4 +1,4 @@
-import { toRoom } from '../emitters/gameEmitter.js';
+import { toRoom, toSocket } from '../emitters/gameEmitter.js';
 import { logger } from '../../utils/logger.js';
 
 export function registerLobbyHandlers(socket, io, engine) {
@@ -11,10 +11,18 @@ export function registerLobbyHandlers(socket, io, engine) {
       }
       socket.join(gameCode);
       socket.data.gameCode = gameCode;
-      const { participants } = engine.joinGame(gameCode, socket.id, nickname);
-      toRoom(io, gameCode, 'participantsUpdated', { participants });
-      logger.info(`Player ${nickname} joined game ${gameCode}`);
-      callback?.({ participants });
+      socket.data.nickname = nickname;
+
+      const result = engine.joinGame(gameCode, socket.id, nickname);
+
+      if (result.currentState) {
+        // Reconnection — send full state to reconnecting player
+        toSocket(socket, 'reconnected', result.currentState);
+      }
+
+      toRoom(io, gameCode, 'participantsUpdated', { participants: result.participants });
+      logger.info(`Player ${nickname} joined game ${gameCode}${result.currentState ? ' (reconnected)' : ''}`);
+      callback?.({ participants: result.participants, reconnected: !!result.currentState, currentState: result.currentState });
     } catch (err) {
       logger.error('joinGame error:', err.message);
       callback?.({ error: err.message });
@@ -29,12 +37,14 @@ export function registerLobbyHandlers(socket, io, engine) {
           const game = engine.store.get(gameCode);
           if (game) game.hostSocketId = null;
         } else {
-          const { participants } = engine.leaveGame(gameCode, socket.id);
+          // Mark as disconnected instead of removing
+          engine.store.markDisconnected(gameCode, socket.id);
+          const participants = engine._getParticipantsList(gameCode);
           toRoom(io, gameCode, 'participantsUpdated', { participants });
         }
         logger.info(`Client disconnected from game ${gameCode}`);
       } catch (err) {
-        logger.error('leaveGame on disconnect:', err.message);
+        logger.error('disconnect handler error:', err.message);
       }
     }
   });

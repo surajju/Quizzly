@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useSocket } from '../../context/SocketContext'
 import { useGame } from '../../context/GameContext'
@@ -11,10 +11,19 @@ import PageWrapper from '../../components/layout/PageWrapper'
 
 export default function PlayerJoin() {
   const navigate = useNavigate()
+  const { gameCode: urlCode } = useParams()
   const { socket, connected } = useSocket()
   const { dispatch } = useGame()
   const { setNickname } = usePlayer()
-  const [gameCode, setGameCode] = useState('')
+  const [gameCode, setGameCode] = useState(urlCode?.toUpperCase() || '')
+  const nicknameInputRef = useRef(null)
+
+  useEffect(() => {
+    if (urlCode) {
+      setGameCode(urlCode.toUpperCase())
+      nicknameInputRef.current?.focus()
+    }
+  }, [urlCode])
   const [nickname, setNicknameInput] = useState('')
   const [error, setError] = useState('')
   const [joining, setJoining] = useState(false)
@@ -60,6 +69,7 @@ export default function PlayerJoin() {
               placeholder="Enter code"
             />
             <Input
+              ref={nicknameInputRef}
               label="Nickname"
               value={nickname}
               onChange={(e) => setNicknameInput(e.target.value)}

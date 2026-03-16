@@ -9,6 +9,7 @@ import QuestionDisplay from '../../components/Quiz/QuestionDisplay'
 import Leaderboard from '../../components/Leaderboard/Leaderboard'
 import AnswerProgress from '../../components/Quiz/AnswerProgress'
 import PageWrapper from '../../components/layout/PageWrapper'
+import GameHeader from '../../components/layout/GameHeader'
 
 const optionColors = [
   'bg-red-500/20 border-red-500/50',
@@ -45,6 +46,7 @@ export default function HostReveal() {
   return (
     <PageWrapper>
       <div className="max-w-2xl mx-auto">
+        <GameHeader />
         <QuestionDisplay
           question={currentQuestion}
           questionIndex={questionIndex}

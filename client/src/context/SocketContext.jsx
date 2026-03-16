@@ -1,10 +1,11 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState, useCallback } from 'react'
 import { createSocket, disconnectSocket, getSocket } from '../services/socket'
 
 const SocketContext = createContext(null)
 
 export function SocketProvider({ children }) {
   const [connected, setConnected] = useState(false)
+  const onReconnect = useCallback(() => setConnected(true), [])
 
   useEffect(() => {
     const socket = createSocket()
@@ -15,10 +16,12 @@ export function SocketProvider({ children }) {
 
     socket.on('connect', onConnect)
     socket.on('disconnect', onDisconnect)
+    socket.on('reconnect', onReconnect)
 
     return () => {
       socket.off('connect', onConnect)
       socket.off('disconnect', onDisconnect)
+      socket.off('reconnect', onReconnect)
       disconnectSocket()
     }
   }, [])

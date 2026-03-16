@@ -6,6 +6,7 @@ import { usePlayer } from '../../context/PlayerContext'
 import { useSocket } from '../../context/SocketContext'
 import Leaderboard from '../../components/Leaderboard/Leaderboard'
 import PageWrapper from '../../components/layout/PageWrapper'
+import GameHeader from '../../components/layout/GameHeader'
 
 export default function PlayerReveal() {
   const { leaderboard } = useGame()
@@ -29,6 +30,7 @@ export default function PlayerReveal() {
   return (
     <PageWrapper>
       <div className="max-w-2xl mx-auto">
+        <GameHeader />
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}

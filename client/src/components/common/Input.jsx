@@ -1,9 +1,11 @@
-export default function Input({
+import { forwardRef } from 'react'
+
+export default forwardRef(function Input({
   label,
   error,
   className = '',
   ...props
-}) {
+}, ref) {
   return (
     <div className="w-full">
       {label && (
@@ -12,6 +14,7 @@ export default function Input({
         </label>
       )}
       <input
+        ref={ref}
         className={`
           w-full px-4 py-2.5 rounded-lg
           bg-white/5 border border-white/20
@@ -30,4 +33,4 @@ export default function Input({
       )}
     </div>
   )
-}
+})

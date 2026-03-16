@@ -35,7 +35,7 @@ export default function LeaderboardRow({
         ${highlighted ? 'ring-2 ring-indigo-400 bg-indigo-500/20' : ''}
       `}
     >
-      <div className="w-10 flex items-center justify-center">
+      <div className="w-10 flex items-center justify-center hidden sm:flex">
         {rankChange === 'up' && (
           <span className="text-emerald-400 text-lg">↑</span>
         )}
@@ -50,7 +50,7 @@ export default function LeaderboardRow({
       <span className="flex-1 font-medium text-white truncate">{nickname}</span>
       <span className="font-bold text-indigo-300">{score}</span>
       {showPoints && pointsEarned != null && pointsEarned > 0 && (
-        <span className="text-emerald-400 text-sm">+{pointsEarned}</span>
+        <span className="text-emerald-400 text-sm hidden sm:inline">+{pointsEarned}</span>
       )}
       {showPoints && wasCorrect === false && (
         <span className="text-red-400 text-sm">✗</span>

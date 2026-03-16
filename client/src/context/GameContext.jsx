@@ -5,6 +5,7 @@ const initialState = {
   hostToken: null,
   state: 'idle',
   quiz: null,
+  quizTitle: null,
   currentQuestion: null,
   questionIndex: 0,
   totalQuestions: 0,
@@ -20,7 +21,9 @@ function gameReducer(state, action) {
     case 'SET_GAME':
       return { ...state, gameCode: action.payload.gameCode, hostToken: action.payload.hostToken }
     case 'SET_QUIZ':
-      return { ...state, quiz: action.payload }
+      return { ...state, quiz: action.payload, quizTitle: action.payload?.title ?? state.quizTitle }
+    case 'SET_QUIZ_TITLE':
+      return { ...state, quizTitle: action.payload }
     case 'PARTICIPANTS_UPDATED':
       return { ...state, participants: action.payload }
     case 'QUESTION_START':
@@ -30,6 +33,7 @@ function gameReducer(state, action) {
         questionIndex: action.payload.questionIndex,
         totalQuestions: action.payload.totalQuestions,
         endsAt: action.payload.endsAt,
+        quizTitle: action.payload.quizTitle ?? state.quizTitle,
         state: 'question',
       }
     case 'REVEAL':
@@ -77,6 +81,7 @@ export function GameProvider({ children }) {
             questionIndex: payload.questionIndex,
             totalQuestions: payload.totalQuestions,
             endsAt: payload.endsAt,
+            quizTitle: payload.quizTitle,
           },
         })
         break

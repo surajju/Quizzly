@@ -36,7 +36,59 @@ class GameStore {
       prevRank: null,
       wasCorrect: false,
       pointsEarned: 0,
+      connected: true,
     });
+  }
+
+  markDisconnected(gameCode, socketId) {
+    const game = this.games.get(gameCode);
+    if (!game) return;
+    const participant = game.participants.get(socketId);
+    if (participant) {
+      participant.connected = false;
+      participant.disconnectedAt = Date.now();
+    }
+  }
+
+  reconnectPlayer(gameCode, oldSocketId, newSocketId) {
+    const game = this.games.get(gameCode);
+    if (!game) return null;
+    const participant = game.participants.get(oldSocketId);
+    if (!participant || participant.connected !== false) return null;
+
+    const { score, streak, prevRank, nickname, wasCorrect, pointsEarned } = participant;
+    const newParticipant = {
+      socketId: newSocketId,
+      nickname,
+      score,
+      streak: streak ?? 0,
+      prevRank: prevRank ?? null,
+      wasCorrect: wasCorrect ?? false,
+      pointsEarned: pointsEarned ?? 0,
+      connected: true,
+    };
+    game.participants.delete(oldSocketId);
+    game.participants.set(newSocketId, newParticipant);
+
+    // Migrate answer if player had submitted before disconnect
+    if (game.answers.has(oldSocketId)) {
+      const answer = game.answers.get(oldSocketId);
+      game.answers.delete(oldSocketId);
+      game.answers.set(newSocketId, answer);
+    }
+
+    return newParticipant;
+  }
+
+  findDisconnectedPlayer(gameCode, nickname) {
+    const game = this.games.get(gameCode);
+    if (!game) return null;
+    for (const [socketId, p] of game.participants) {
+      if (p.connected === false && p.nickname === nickname) {
+        return { socketId, ...p };
+      }
+    }
+    return null;
   }
 
   removePlayer(gameCode, socketId) {

@@ -49,7 +49,7 @@ export default function Home() {
           transition={{ duration: 0.5 }}
           className="text-center mb-12"
         >
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-3 flex items-center justify-center gap-3">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-3 flex items-center justify-center gap-3">
             <span className="text-6xl">🔥</span>
             QuizFire
           </h1>

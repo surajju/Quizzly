@@ -4,6 +4,7 @@ import { useGame } from '../../context/GameContext'
 import { usePlayer } from '../../context/PlayerContext'
 import Card from '../../components/common/Card'
 import PageWrapper from '../../components/layout/PageWrapper'
+import GameHeader from '../../components/layout/GameHeader'
 
 export default function PlayerLobby() {
   const { gameCode, participants } = useGame()
@@ -14,6 +15,7 @@ export default function PlayerLobby() {
   return (
     <PageWrapper>
       <div className="max-w-xl mx-auto">
+        <GameHeader />
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}

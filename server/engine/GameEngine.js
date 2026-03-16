@@ -40,10 +40,64 @@ export class GameEngine {
   joinGame(gameCode, socketId, nickname) {
     const game = this.store.get(gameCode);
     if (!game) throw new GameNotFound();
+
+    // Check for reconnection (player with same nickname disconnected)
+    const disconnected = this.store.findDisconnectedPlayer(gameCode, nickname);
+    if (disconnected) {
+      return this.reconnectPlayer(gameCode, socketId, nickname);
+    }
+
+    // Normal join - only allowed in lobby
     if (game.state !== STATES.LOBBY) throw new InvalidState('Game already started');
     this.store.addPlayer(gameCode, socketId, nickname);
     const participants = this._getParticipantsList(gameCode);
     return { participants };
+  }
+
+  reconnectPlayer(gameCode, newSocketId, nickname) {
+    const game = this.store.get(gameCode);
+    if (!game) throw new GameNotFound();
+
+    const disconnected = this.store.findDisconnectedPlayer(gameCode, nickname);
+    if (!disconnected) throw new InvalidAction('No disconnected player found with that nickname');
+
+    this.store.reconnectPlayer(gameCode, disconnected.socketId, newSocketId);
+
+    const participants = this._getParticipantsList(gameCode);
+
+    // Build current state snapshot for the reconnecting player
+    const currentState = {
+      gameCode,
+      state: game.state,
+      questionIndex: game.questionIndex,
+      totalQuestions: (game.quiz?.questions ?? []).length,
+      participants,
+      quizTitle: game.quiz?.title ?? 'Quiz',
+    };
+
+    if (game.state === STATES.QUESTION) {
+      const question = game.quiz?.questions?.[game.questionIndex];
+      if (question) {
+        currentState.question = this._sanitizeQuestion(question);
+        currentState.endsAt = Date.now() + this.timerManager.getRemainingTime(gameCode);
+      }
+    }
+
+    if (game.state === STATES.REVEAL || game.state === STATES.ENDED) {
+      const leaderboard = computeLeaderboard(game.participants);
+      currentState.leaderboard = leaderboard;
+    }
+
+    if (game.state === STATES.REVEAL) {
+      const question = game.quiz?.questions?.[game.questionIndex];
+      currentState.correctIndex = question?.correctIndex ?? -1;
+    }
+
+    if (game.state === STATES.ENDED) {
+      currentState.finalLeaderboard = computeLeaderboard(game.participants);
+    }
+
+    return { currentState, participants };
   }
 
   leaveGame(gameCode, socketId) {
@@ -181,6 +235,7 @@ export class GameEngine {
       state: game.state,
       questionIndex: game.questionIndex,
       totalQuestions: (game.quiz?.questions ?? []).length,
+      quizTitle: game.quiz?.title ?? 'Quiz',
       participants: this._getParticipantsList(gameCode),
     };
 
@@ -219,6 +274,7 @@ export class GameEngine {
       questionIndex: game.questionIndex,
       totalQuestions: (game.quiz?.questions ?? []).length,
       endsAt: Date.now() + timeLimit,
+      quizTitle: game.quiz?.title ?? 'Quiz',
     };
   }
 
@@ -231,11 +287,13 @@ export class GameEngine {
   _getParticipantsList(gameCode) {
     const game = this.store.get(gameCode);
     if (!game) return [];
-    return Array.from(game.participants.values()).map((p) => ({
-      socketId: p.socketId,
-      nickname: p.nickname,
-      score: p.score,
-      streak: p.streak ?? 0,
-    }));
+    return Array.from(game.participants.values())
+      .filter((p) => p.connected === true || p.connected === undefined)
+      .map((p) => ({
+        socketId: p.socketId,
+        nickname: p.nickname,
+        score: p.score,
+        streak: p.streak ?? 0,
+      }));
   }
 }
