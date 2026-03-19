@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import multer from 'multer';
 import { gameStore } from '../store/index.js';
 import { GameEngine } from '../engine/GameEngine.js';
 import { config } from '../config/index.js';
@@ -6,7 +7,13 @@ import { logger } from '../utils/logger.js';
 import { templates } from '../data/templates.js';
 import { quizRepository } from '../store/QuizRepository.js';
 import { resultRepository } from '../store/ResultRepository.js';
-import { generateQuestions } from '../services/aiGenerator.js';
+import { generateQuestions, generateFromDocument } from '../services/aiGenerator.js';
+import { extractText, isSupportedType } from '../services/documentParser.js';
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 },
+});
 
 const router = Router();
 const engine = new GameEngine(gameStore, config);
@@ -60,6 +67,48 @@ router.post('/api/generate', async (req, res) => {
     res.json({ questions, topic: topic.trim() });
   } catch (err) {
     logger.error('POST /api/generate error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.post('/api/generate-from-document', upload.single('document'), async (req, res) => {
+  try {
+    const file = req.file;
+    const pastedText = req.body.text;
+    const count = Math.min(Math.max(parseInt(req.body.count) || 5, 1), 15);
+
+    let documentText;
+
+    if (file) {
+      if (!isSupportedType(file.mimetype)) {
+        return res.status(400).json({ error: 'Unsupported file type. Please upload a PDF or TXT file.' });
+      }
+      documentText = await extractText(file.buffer, file.mimetype);
+    } else if (pastedText?.trim()) {
+      documentText = pastedText.trim();
+      if (documentText.length < 50) {
+        return res.status(400).json({ error: 'Text is too short. Please provide more content.' });
+      }
+      if (documentText.length > 15000) {
+        documentText = documentText.slice(0, 15000);
+      }
+    } else {
+      return res.status(400).json({ error: 'Please upload a file or paste some text.' });
+    }
+
+    const questions = await generateFromDocument(documentText, count);
+    if (!questions.length) {
+      return res.status(500).json({ error: 'Failed to generate questions from the document.' });
+    }
+
+    const source = file ? file.originalname : 'Pasted text';
+    logger.info(`AI generated ${questions.length} questions from document: "${source}"`);
+    res.json({ questions, source });
+  } catch (err) {
+    logger.error('POST /api/generate-from-document error:', err.message);
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ error: 'File is too large. Maximum size is 5MB.' });
+    }
     res.status(500).json({ error: err.message });
   }
 });

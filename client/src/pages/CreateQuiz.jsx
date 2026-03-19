@@ -9,6 +9,7 @@ import Card from '../components/common/Card'
 import QuestionEditor from '../components/Quiz/QuestionEditor'
 import TemplateSelector from '../components/Quiz/TemplateSelector'
 import AIGenerator from '../components/Quiz/AIGenerator'
+import DocumentUploader from '../components/Quiz/DocumentUploader'
 import PageWrapper from '../components/layout/PageWrapper'
 
 const emptyQuestion = {
@@ -119,6 +120,15 @@ export default function CreateQuiz() {
           </button>
           <button
             type="button"
+            onClick={() => setMode('document')}
+            className={`flex-1 py-3 rounded-xl text-sm font-medium transition-all ${
+              mode === 'document' ? 'bg-indigo-500 text-white' : 'bg-white/5 text-white/60 hover:bg-white/10'
+            }`}
+          >
+            📄 Document
+          </button>
+          <button
+            type="button"
             onClick={() => setMode('template')}
             className={`flex-1 py-3 rounded-xl text-sm font-medium transition-all ${
               mode === 'template' ? 'bg-indigo-500 text-white' : 'bg-white/5 text-white/60 hover:bg-white/10'
@@ -131,6 +141,10 @@ export default function CreateQuiz() {
         {mode === 'ai' ? (
           <Card className="mb-6">
             <AIGenerator onGenerated={handleAIGenerated} />
+          </Card>
+        ) : mode === 'document' ? (
+          <Card className="mb-6">
+            <DocumentUploader onGenerated={handleAIGenerated} />
           </Card>
         ) : mode === 'template' ? (
           <Card className="mb-6">

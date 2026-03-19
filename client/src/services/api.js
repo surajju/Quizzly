@@ -40,3 +40,18 @@ export async function generateQuestions(topic, count = 5) {
   if (!res.ok) throw new Error(data.error || 'Failed to generate questions')
   return data
 }
+
+export async function generateFromDocument(file, text, count = 5) {
+  const formData = new FormData()
+  if (file) formData.append('document', file)
+  if (text) formData.append('text', text)
+  formData.append('count', String(count))
+
+  const res = await fetch(`${apiBase}/generate-from-document`, {
+    method: 'POST',
+    body: formData,
+  })
+  const data = await res.json()
+  if (!res.ok) throw new Error(data.error || 'Failed to generate questions from document')
+  return data
+}
