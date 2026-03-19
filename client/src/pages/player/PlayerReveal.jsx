@@ -11,7 +11,7 @@ import ChatBox from '../../components/Chat/ChatBox'
 import ReactionBar from '../../components/Reactions/ReactionBar'
 
 export default function PlayerReveal() {
-  const { leaderboard } = useGame()
+  const { leaderboard, correctIndex, currentQuestion } = useGame()
   const { socket } = useSocket()
   const { wasCorrect, pointsEarned, streak, rank, prevRank, updateFromLeaderboard } = usePlayer()
 
@@ -28,6 +28,8 @@ export default function PlayerReveal() {
       ? 'up'
       : 'down'
     : 'same'
+
+  const correctAnswerText = currentQuestion?.options?.[correctIndex] ?? null
 
   return (
     <PageWrapper>
@@ -67,6 +69,17 @@ export default function PlayerReveal() {
                 ✗
               </motion.span>
               <h2 className="text-3xl font-bold text-red-400">Wrong</h2>
+              {correctAnswerText && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="mt-2 px-5 py-3 rounded-xl bg-emerald-500/15 border border-emerald-500/30"
+                >
+                  <p className="text-sm text-white/60 mb-1">Correct answer</p>
+                  <p className="text-lg font-semibold text-emerald-400">{correctAnswerText}</p>
+                </motion.div>
+              )}
             </div>
           )}
 
