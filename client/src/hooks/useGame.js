@@ -48,7 +48,7 @@ export function useGameEvents() {
     const onReveal = (payload) => {
       dispatch({
         type: 'REVEAL',
-        payload: { leaderboard: payload.leaderboard, correctIndex: payload.correctIndex },
+        payload: { leaderboard: payload.leaderboard, correctIndex: payload.correctIndex, isPoll: payload.isPoll, pollResults: payload.pollResults },
       })
     }
 
@@ -78,7 +78,7 @@ export function useGameEvents() {
       if (state.state === 'reveal' && state.leaderboard) {
         dispatch({
           type: 'REVEAL',
-          payload: { leaderboard: state.leaderboard, correctIndex: state.correctIndex },
+          payload: { leaderboard: state.leaderboard, correctIndex: state.correctIndex, isPoll: state.isPoll, pollResults: state.pollResults },
         })
       }
       if (state.state === 'ended' && state.finalLeaderboard) {

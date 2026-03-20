@@ -91,7 +91,13 @@ export class GameEngine {
 
     if (game.state === STATES.REVEAL) {
       const question = game.quiz?.questions?.[game.questionIndex];
-      currentState.correctIndex = question?.correctIndex ?? -1;
+      const isPoll = question?.type === 'poll';
+      currentState.isPoll = isPoll;
+      if (isPoll) {
+        currentState.pollResults = this._computePollResults(game, question);
+      } else {
+        currentState.correctIndex = question?.correctIndex ?? -1;
+      }
     }
 
     if (game.state === STATES.ENDED) {
@@ -160,6 +166,16 @@ export class GameEngine {
     this.timerManager.stopTimer(gameCode);
 
     const question = game.quiz?.questions?.[game.questionIndex];
+    const isPoll = question?.type === 'poll';
+
+    if (isPoll) {
+      // Poll mode — no scoring, just vote distribution
+      const pollResults = this._computePollResults(game, question);
+      const leaderboard = computeLeaderboard(game.participants);
+      return { isPoll: true, pollResults, leaderboard, questionIndex: game.questionIndex };
+    }
+
+    // Quiz mode — normal scoring
     const correctIndex = question?.correctIndex ?? -1;
     const timeLimit = (question?.timeLimit ?? this.config.TIMER_DEFAULT) * 1000;
 
@@ -300,7 +316,23 @@ export class GameEngine {
   _sanitizeQuestion(question) {
     if (!question) return null;
     const { correctIndex, ...rest } = question;
-    return rest;
+    return { ...rest, type: question.type || 'quiz' };
+  }
+
+  _computePollResults(game, question) {
+    const optionCount = question?.options?.length ?? 4;
+    const results = new Array(optionCount).fill(0);
+    for (const answer of game.answers.values()) {
+      if (answer.optionIndex >= 0 && answer.optionIndex < optionCount) {
+        results[answer.optionIndex]++;
+      }
+    }
+    const totalVotes = results.reduce((a, b) => a + b, 0);
+    return results.map((count, i) => ({
+      option: question?.options?.[i] ?? `Option ${i + 1}`,
+      votes: count,
+      percentage: totalVotes > 0 ? Math.round((count / totalVotes) * 100) : 0,
+    }));
   }
 
   _getParticipantsList(gameCode) {

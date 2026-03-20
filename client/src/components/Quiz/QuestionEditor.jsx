@@ -10,16 +10,18 @@ export default function QuestionEditor({ value, onChange }) {
   const [correctIndex, setCorrectIndex] = useState(value?.correctIndex ?? 0)
   const [timeLimit, setTimeLimit] = useState(value?.timeLimit ?? 15)
   const [imageUrl, setImageUrl] = useState(value?.imageUrl ?? '')
+  const [type, setType] = useState(value?.type ?? 'quiz')
 
   useEffect(() => {
     onChange?.({
       text,
       options: options.filter(Boolean),
-      correctIndex,
+      correctIndex: type === 'poll' ? -1 : correctIndex,
       timeLimit,
       imageUrl: imageUrl.trim() || undefined,
+      type,
     })
-  }, [text, options, correctIndex, timeLimit, imageUrl])
+  }, [text, options, correctIndex, timeLimit, imageUrl, type])
 
   const addOption = () => {
     if (options.length >= 4) return
@@ -44,11 +46,35 @@ export default function QuestionEditor({ value, onChange }) {
 
   return (
     <div className="space-y-4">
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={() => setType('quiz')}
+          className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
+            type === 'quiz'
+              ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/40'
+              : 'bg-white/5 text-white/50 hover:bg-white/10 border border-white/10'
+          }`}
+        >
+          🧠 Quiz
+        </button>
+        <button
+          type="button"
+          onClick={() => setType('poll')}
+          className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
+            type === 'poll'
+              ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40'
+              : 'bg-white/5 text-white/50 hover:bg-white/10 border border-white/10'
+          }`}
+        >
+          📊 Poll
+        </button>
+      </div>
       <Input
-        label="Question"
+        label={type === 'poll' ? 'Poll Question' : 'Question'}
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="Enter your question..."
+        placeholder={type === 'poll' ? 'Enter your poll question...' : 'Enter your question...'}
       />
       <div>
         <Input
@@ -71,18 +97,18 @@ export default function QuestionEditor({ value, onChange }) {
       </div>
       <div>
         <label className="block text-sm font-medium text-white/80 mb-2">
-          Options (select correct)
+          {type === 'poll' ? 'Options' : 'Options (select correct)'}
         </label>
         <div className="space-y-2">
           {options.map((opt, i) => (
             <div key={i} className="flex gap-2 items-center">
-              <input
+              {type === 'quiz' && <input
                 type="radio"
                 name="correct"
                 checked={correctIndex === i}
                 onChange={() => setCorrectIndex(i)}
                 className="w-4 h-4 text-indigo-500"
-              />
+              />}
               <Input
                 value={opt}
                 onChange={(e) => updateOption(i, e.target.value)}

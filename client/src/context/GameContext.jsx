@@ -13,6 +13,8 @@ const initialState = {
   leaderboard: [],
   finalLeaderboard: [],
   correctIndex: null,
+  isPoll: false,
+  pollResults: null,
   endsAt: null,
 }
 
@@ -41,6 +43,8 @@ function gameReducer(state, action) {
         ...state,
         leaderboard: action.payload.leaderboard,
         correctIndex: action.payload.correctIndex,
+        isPoll: action.payload.isPoll || false,
+        pollResults: action.payload.pollResults || null,
         state: 'reveal',
       }
     case 'QUIZ_END':
@@ -88,7 +92,7 @@ export function GameProvider({ children }) {
       case 'reveal':
         dispatch({
           type: 'REVEAL',
-          payload: { leaderboard: payload.leaderboard, correctIndex: payload.correctIndex },
+          payload: { leaderboard: payload.leaderboard, correctIndex: payload.correctIndex, isPoll: payload.isPoll, pollResults: payload.pollResults },
         })
         break
       case 'quizEnd':

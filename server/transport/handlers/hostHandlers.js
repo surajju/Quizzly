@@ -69,6 +69,8 @@ export function registerHostHandlers(socket, io, engine, gameStore) {
         correctIndex: result.correctIndex,
         leaderboard: result.leaderboard,
         questionIndex: result.questionIndex,
+        isPoll: result.isPoll || false,
+        pollResults: result.pollResults || null,
       });
       logger.info(`Answer revealed for game ${gameCode}`);
       callback?.(result);

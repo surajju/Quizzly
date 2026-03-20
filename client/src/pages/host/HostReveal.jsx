@@ -12,6 +12,7 @@ import PageWrapper from '../../components/layout/PageWrapper'
 import GameHeader from '../../components/layout/GameHeader'
 import ChatBox from '../../components/Chat/ChatBox'
 import ReactionBar from '../../components/Reactions/ReactionBar'
+import PollResults from '../../components/Quiz/PollResults'
 
 const optionColors = [
   'bg-red-500/20 border-red-500/50',
@@ -21,7 +22,7 @@ const optionColors = [
 ]
 
 export default function HostReveal() {
-  const { gameCode, hostToken, currentQuestion, questionIndex, totalQuestions, correctIndex, leaderboard, participants } = useGame()
+  const { gameCode, hostToken, currentQuestion, questionIndex, totalQuestions, correctIndex, leaderboard, participants, isPoll, pollResults } = useGame()
   const { socket } = useSocket()
   const [perOption, setPerOption] = useState([])
 
@@ -54,33 +55,41 @@ export default function HostReveal() {
           questionIndex={questionIndex}
           totalQuestions={totalQuestions}
         >
-          <div className="space-y-3 mt-6">
-            {currentQuestion?.options?.map((opt, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0.8, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className={`flex items-center gap-4 px-6 py-4 rounded-xl border-2 ${
-                  i === correctIndex ? 'bg-emerald-500/40 border-emerald-400' : optionColors[i % 4]
-                } text-white`}
-              >
-                <span className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center font-bold">
-                  {String.fromCharCode(65 + i)}
-                </span>
-                <span className="flex-1">{opt}</span>
-                {i === correctIndex && <span className="text-emerald-300">✓ Correct</span>}
-              </motion.div>
-            ))}
-          </div>
+          {isPoll && pollResults ? (
+            <div className="mt-6">
+              <PollResults results={pollResults} />
+            </div>
+          ) : (
+            <div className="space-y-3 mt-6">
+              {currentQuestion?.options?.map((opt, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0.8, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className={`flex items-center gap-4 px-6 py-4 rounded-xl border-2 ${
+                    i === correctIndex ? 'bg-emerald-500/40 border-emerald-400' : optionColors[i % 4]
+                  } text-white`}
+                >
+                  <span className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center font-bold">
+                    {String.fromCharCode(65 + i)}
+                  </span>
+                  <span className="flex-1">{opt}</span>
+                  {i === correctIndex && <span className="text-emerald-300">✓ Correct</span>}
+                </motion.div>
+              ))}
+            </div>
+          )}
         </QuestionDisplay>
 
         <Card className="my-6">
           <AnswerProgress answered={answered} total={total} perOption={perOption} />
         </Card>
 
-        <div className="mb-6">
-          <Leaderboard leaderboard={leaderboard} />
-        </div>
+        {!isPoll && (
+          <div className="mb-6">
+            <Leaderboard leaderboard={leaderboard} />
+          </div>
+        )}
 
         <Button
           variant="primary"

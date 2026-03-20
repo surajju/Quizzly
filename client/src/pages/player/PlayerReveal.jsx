@@ -9,9 +9,10 @@ import PageWrapper from '../../components/layout/PageWrapper'
 import GameHeader from '../../components/layout/GameHeader'
 import ChatBox from '../../components/Chat/ChatBox'
 import ReactionBar from '../../components/Reactions/ReactionBar'
+import PollResults from '../../components/Quiz/PollResults'
 
 export default function PlayerReveal() {
-  const { leaderboard, correctIndex, currentQuestion } = useGame()
+  const { leaderboard, correctIndex, currentQuestion, isPoll, pollResults } = useGame()
   const { socket } = useSocket()
   const { wasCorrect, pointsEarned, streak, rank, prevRank, updateFromLeaderboard } = usePlayer()
 
@@ -40,7 +41,11 @@ export default function PlayerReveal() {
           animate={{ scale: 1, opacity: 1 }}
           className="text-center mb-8"
         >
-          {wasCorrect ? (
+          {isPoll && pollResults ? (
+            <div className="text-left">
+              <PollResults results={pollResults} />
+            </div>
+          ) : wasCorrect ? (
             <div className="flex flex-col items-center gap-4">
               <motion.span
                 initial={{ scale: 0 }}
@@ -83,17 +88,21 @@ export default function PlayerReveal() {
             </div>
           )}
 
-          <div className="mt-6 flex items-center justify-center gap-2">
-            <span className="text-white/80">Your rank:</span>
-            <span className="font-bold text-white">#{rank}</span>
-            {rankChange === 'up' && <span className="text-emerald-400">↑</span>}
-            {rankChange === 'down' && <span className="text-red-400">↓</span>}
-          </div>
+          {!isPoll && (
+            <div className="mt-6 flex items-center justify-center gap-2">
+              <span className="text-white/80">Your rank:</span>
+              <span className="font-bold text-white">#{rank}</span>
+              {rankChange === 'up' && <span className="text-emerald-400">↑</span>}
+              {rankChange === 'down' && <span className="text-red-400">↓</span>}
+            </div>
+          )}
         </motion.div>
 
-        <div className="mb-6">
-          <Leaderboard leaderboard={leaderboard} highlightSocketId={socket?.id} />
-        </div>
+        {!isPoll && (
+          <div className="mb-6">
+            <Leaderboard leaderboard={leaderboard} highlightSocketId={socket?.id} />
+          </div>
+        )}
 
         <motion.p
           animate={{ opacity: [0.6, 1, 0.6] }}

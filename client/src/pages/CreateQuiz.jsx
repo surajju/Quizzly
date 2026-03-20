@@ -50,6 +50,7 @@ export default function CreateQuiz() {
       correctIndex: draft.correctIndex,
       timeLimit: draft.timeLimit,
       imageUrl: draft.imageUrl || undefined,
+      type: draft.type || 'quiz',
     }
     if (!q.text) {
       setError('Question text is required')
@@ -192,7 +193,14 @@ export default function CreateQuiz() {
                   className="flex items-center justify-between gap-4 p-4 rounded-xl bg-white/5 border border-white/10"
                 >
                   <div className="flex-1 min-w-0">
-                    <p className="text-white font-medium truncate">{q.text || '(No text)'}</p>
+                    <div className="flex items-center gap-2">
+                      <p className="text-white font-medium truncate">{q.text || '(No text)'}</p>
+                      {q.type === 'poll' && (
+                        <span className="shrink-0 px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-xs font-medium border border-purple-500/30">
+                          📊 Poll
+                        </span>
+                      )}
+                    </div>
                     <p className="text-sm text-white/50">
                       {q.options?.length || 0} options{q.imageUrl ? ' · 🖼️ image' : ''}
                     </p>
